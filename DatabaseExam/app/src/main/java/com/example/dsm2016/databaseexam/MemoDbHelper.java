@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class MemoDbHelper extends SQLiteOpenHelper {
+public class    MemoDbHelper extends SQLiteOpenHelper {
     private static MemoDbHelper sInstance;
     // DB의 버전으로 1부터 시작하고 스키마가 변경될 때 숫자를 올린다.
     private static final int DB_VERSION = 1;

@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         ListView listView = (ListView) findViewById(R.id.memo_list);
+
         MemoDbHelper dbHelper = MemoDbHelper.getsInstance(this);
         Cursor cursor = dbHelper.getReadableDatabase().query(MemoContract.MemoEntry.TABLE_NAME, null, null, null, null, null, null);
         //MemoAdapter adapter = new MemoAdapter(this, cursor);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("메모 삭제");
                 builder.setMessage("메모를 삭제하시겠습니까?");
-                builder.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("삭제",         new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SQLiteDatabase db = MemoDbHelper.getsInstance(MainActivity.this).getWritableDatabase();
