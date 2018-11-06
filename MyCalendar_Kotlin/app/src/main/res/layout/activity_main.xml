@@ -2,9 +2,12 @@
 <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/coordinator_layout"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:fitsSystemWindows="true">
+    <include
+
+    layout="@layout/activity_main_content"/>
 
     <android.support.design.bottomappbar.BottomAppBar
             android:id="@+id/bar"
@@ -17,6 +20,7 @@
             app:fabAlignmentMode="center"
             app:fabCradleMargin="4dp"
             app:hideOnScroll="true"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:fabCradleRoundedCornerRadius="8dp"
             app:fabCradleVerticalOffset="4dp"/>
 
