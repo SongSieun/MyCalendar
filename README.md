@@ -29,3 +29,31 @@
 #### WeeklyWeather_api
 
 - We used public data to obtain meteorological data from 3 to 10 days.
+
+
+
+-------------- 위의 프로젝트들은 기존의 My Calendar의 기능을 세부적으로 나눠 구현한 예제 입니다. --------------
+
+
+
+일정관리 애플리케이션
+
+
+
+
+
+![](https://github.com/SongSieun/MyCalendar/blob/master/MyCalendarResultImage.png)
+
+
+
+### 사용기술
+
+Java(Android)
+
+ConstraintLayout, DataBinding, RecyclerView, Realm ...
+
+
+
+### TODO
+
+오류수정
