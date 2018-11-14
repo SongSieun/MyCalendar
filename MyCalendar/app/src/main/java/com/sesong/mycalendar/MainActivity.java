@@ -82,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
                 String selectedDate = null;
                 if ((dayOfMonth / 10) == 0)
-                    selectedDate = String.valueOf(year) + String.valueOf(month+1) + "0" + String.valueOf(dayOfMonth);
+                    selectedDate = String.valueOf(year) + String.valueOf(month + 1) + "0" + String.valueOf(dayOfMonth);
                 else
-                    selectedDate = String.valueOf(year) + String.valueOf(month+1) + String.valueOf(dayOfMonth);
+                    selectedDate = String.valueOf(year) + String.valueOf(month + 1) + String.valueOf(dayOfMonth);
                 selectTodo(selectedDate);
             }
         });
@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         binding.bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // removeTodo();
             }
         });
 
@@ -259,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setTodo() {
-        List<TodoItem> dataList = new ArrayList<>();
-
         realmResults = realm.where(TodoRealmObject.class).findAll();
         for (int i = 0; i < realmResults.size(); i++) {
             dataList.add(new TodoItem(realmResults.get(i).getTitle(), realmResults.get(i).getContent(), realmResults.get(i).getDate()));
@@ -270,9 +267,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectTodo(String calendarDate) {
-        // 2살 미만???????????의 모든 개에 대한 Realm 질의합니다
         realmResults = realm.where(TodoRealmObject.class).equalTo("date", calendarDate).findAll();
-        for (int i = 0; i < realmResults.size(); i++){
+        for (int i = 0; i < realmResults.size(); i++) {
             dataList.add(new TodoItem(realmResults.get(i).getTitle(), realmResults.get(i).getContent(), realmResults.get(i).getDate()));
         }
         TodoRecyclerAdapter adapter = new TodoRecyclerAdapter(dataList);
@@ -284,16 +280,12 @@ public class MainActivity extends AppCompatActivity {
 
         // 1번의 값 삭제
         realm.beginTransaction();
-        realmResults.deleteAllFromRealm();
+        TodoRealmObject realmObject = realmResults.get(position);
+        realmObject.deleteFromRealm();
+        //realmResults.deleteAllFromRealm();
         realm.commitTransaction();
         setTodo();
     }
-
-    /*private void setTodo() {
-        dataList.add(new TodoItem());
-        TodoRecyclerAdapter adapter = new TodoRecyclerAdapter(dataList);
-        binding.layoutContent.recyclerview.setAdapter(adapter);
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
