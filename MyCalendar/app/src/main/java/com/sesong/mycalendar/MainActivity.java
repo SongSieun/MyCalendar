@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUrl() {
         data_url = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData?serviceKey=" +
-                "%2Fci7Zc3Sb4%2ByZV9TNfQv3HfvWhiyu5ysfWzRMSDEOSIaec3gy8S%2BRBElcLe5PyHmFkTAI%2BjwwclokDJqCrV5XA%3D%3D" +
+                secretKey +
                 "&base_date=" + base_date +
                 "&base_time=" + base_time +
                 "&nx=60&ny=127&numOfRows=20&pageSize=10&pageNo=1&startPage=1&_type=json";
@@ -276,14 +276,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void removeTodo(int position) {
+        realm = Realm.getDefaultInstance();
         realmResults = realm.where(TodoRealmObject.class).equalTo("content", realmResults.get(position).getContent()).findAll();
 
-        // 1번의 값 삭제
-        realm.beginTransaction();
-        TodoRealmObject realmObject = realmResults.get(position);
-        realmObject.deleteFromRealm();
-        //realmResults.deleteAllFromRealm();
-        realm.commitTransaction();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmResults.deleteFromRealm(0);
+            }
+        });
         setTodo();
     }
 
@@ -309,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
         realm.close();
     }
 
-    private void getLocation() {
+    /*private void getLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         LocationListener locationListener = new LocationListener() {
@@ -334,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
