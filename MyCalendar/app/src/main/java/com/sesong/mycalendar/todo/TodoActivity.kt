@@ -1,16 +1,15 @@
-package com.sesong.mycalendar.Todo
+package com.sesong.mycalendar.todo
 
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.sesong.mycalendar.R
-import com.sesong.mycalendar.Todo.TodoActivity
 import com.sesong.mycalendar.databinding.ActivityTodoBinding
 import java.util.*
 

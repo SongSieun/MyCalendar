@@ -2,22 +2,19 @@ package com.sesong.mycalendar
 
 import android.app.Activity
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.sesong.mycalendar.MainActivity
-import com.sesong.mycalendar.Todo.*
-import com.sesong.mycalendar.Weather.WeatherItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sesong.mycalendar.databinding.ActivityMainBinding
+import com.sesong.mycalendar.todo.*
+import com.sesong.mycalendar.weather.WeatherItem
 import io.realm.Realm
-import io.realm.RealmObject
-import io.realm.RealmResults
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedInputStream
@@ -28,22 +25,32 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private var binding: ActivityMainBinding? = null
-    private var realm: Realm? = null
-    var realmResults: RealmResults<TodoRealmObject>? = null
+    private val binding: ActivityMainBinding by lazy { DataBindingUtil.setContentView(this, R.layout.activity_main) }
+    private val realm: Realm by lazy { Realm.getDefaultInstance() }
     private val secretKey = "%2Fci7Zc3Sb4%2ByZV9TNfQv3HfvWhiyu5ysfWzRMSDEOSIaec3gy8S%2BRBElcLe5PyHmFkTAI%2BjwwclokDJqCrV5XA%3D%3D"
-    private var base_date: String? = null
-    private var base_time: String? = null
-    private var time_hour: String? = null
-    private var data_url: String? = null
+    private var baseDate: String? = null
+    private var baseTime: String? = null
+    private var timeHour: String? = null
+    private var dataUrl: String? = null
     private var todoTitle: String? = null
     private var todoContent: String? = null
     private var todoDate: String? = null
     var weatherItemArrayList = ArrayList<WeatherItem>()
-    var dataList: MutableList<TodoItem> = ArrayList()
+    private var dataList: MutableList<TodoItem> = ArrayList()
+    private val time: Unit
+        get() {
+            val now = System.currentTimeMillis()
+            val date = Date(now)
+            val sdfD = SimpleDateFormat("yyyyMMdd")
+            val sdfT = SimpleDateFormat("HH")
+            baseDate = sdfD.format(date)
+            timeHour = sdfT.format(date)
+            Log.d("!@#base_date ", baseDate)
+            Log.d("!@#time_hour ", timeHour)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         init()
         time
         setTime()
@@ -71,20 +78,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        realm = Realm.getDefaultInstance()
+        Realm.init(this)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
-        binding!!.layoutContent.recyclerview.layoutManager = layoutManager
+        binding.layoutContent.recyclerview.layoutManager = layoutManager
     }// ArrayList에 저장// 필요한 데이터 가져오기 (item 이 key인 Array)
 
     // String을 JSONObject로 변환
     private val weather: Unit
-        private get() {
+        get() {
             object : Thread() {
                 override fun run() {
                     super.run()
                     var inputStream: BufferedInputStream? = null
                     try {
-                        val url = URL(data_url)
+                        val url = URL(dataUrl)
                         inputStream = BufferedInputStream(url.openStream())
                         val stringBuffer = StringBuffer()
                         var i: Int
@@ -144,71 +151,56 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUrl() {
-        data_url = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData?serviceKey=" +
+        dataUrl = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData?serviceKey=" +
                 secretKey +
-                "&base_date=" + base_date +
-                "&base_time=" + base_time +
+                "&base_date=" + baseDate +
+                "&base_time=" + baseTime +
                 "&nx=60&ny=127&numOfRows=20&pageSize=10&pageNo=1&startPage=1&_type=json"
-        Log.d("!@#data_url ", data_url)
+        Log.d("!@#data_url ", dataUrl)
     }
 
-    private val time: Unit
-        private get() {
-            val now = System.currentTimeMillis()
-            val date = Date(now)
-            val sdfD = SimpleDateFormat("yyyyMMdd")
-            val sdfT = SimpleDateFormat("HH")
-            base_date = sdfD.format(date)
-            time_hour = sdfT.format(date)
-            Log.d("!@#base_date ", base_date)
-            Log.d("!@#time_hour ", time_hour)
-        }
-
     private fun setTime() {
-        val int_time_hour = time_hour!!.toInt()
-        base_time = if (0 < int_time_hour && int_time_hour <= 2) "2300" else if (2 < int_time_hour && int_time_hour <= 5) "0200" else if (5 < int_time_hour && int_time_hour <= 8) "0500" else if (8 < int_time_hour && int_time_hour <= 11) "0800" else if (11 < int_time_hour && int_time_hour <= 14) "1100" else if (14 < int_time_hour && int_time_hour <= 17) "1400" else if (17 < int_time_hour && int_time_hour <= 20) "1700" else "2000"
-        Log.d("!@#base_time ", base_time)
+        val intTimeHour = timeHour!!.toInt()
+        baseTime = if (intTimeHour in 1..2) "2300" else if (intTimeHour in 3..5) "0200" else if (intTimeHour in 6..8) "0500" else if (intTimeHour in 9..11) "0800" else if (intTimeHour in 12..14) "1100" else if (intTimeHour in 15..17) "1400" else if (intTimeHour in 18..20) "1700" else "2000"
+        Log.d("!@#base_time ", baseTime)
     }
 
     private fun saveTodo() {
         realm.beginTransaction()
         val realmObject: TodoRealmObject = realm.createObject(TodoRealmObject::class.java)
-        realmObject.title = todoTitle
-        realmObject.content = todoContent
-        realmObject.date = todoDate
+        realmObject.title = todoTitle.toString()
+        realmObject.content = todoContent.toString()
+        realmObject.date = todoDate.toString()
         realm.commitTransaction()
     }
 
     private fun setTodo() {
-        realmResults = realm.where(TodoRealmObject::class.java).findAll()
-        for (i in 0 until realmResults.size()) {
-            dataList.add(TodoItem(realmResults.get(i).getTitle(), realmResults.get(i).getContent(), realmResults.get(i).getDate()))
+        val realmResults = realm.where(TodoRealmObject::class.java).findAll()
+        for (i in 0 until realmResults.size) {
+            dataList.add(TodoItem(realmResults[i].title, realmResults[i].content, realmResults[i].date))
         }
         val adapter = TodoRecyclerAdapter(dataList)
         binding!!.layoutContent.recyclerview.adapter = adapter
     }
 
     private fun selectTodo(calendarDate: String) {
-        realmResults = realm.where(TodoRealmObject::class.java).equalTo("date", calendarDate).findAll()
-        for (i in 0 until realmResults.size()) {
-            dataList.add(TodoItem(realmResults.get(i).getTitle(), realmResults.get(i).getContent(), realmResults.get(i).getDate()))
+        val realmResults = realm.where(TodoRealmObject::class.java).equalTo("date", calendarDate).findAll()
+        for (i in 0 until realmResults.size) {
+            dataList.add(TodoItem(realmResults[i].title, realmResults[i].content, realmResults[i].date))
         }
         val adapter = TodoRecyclerAdapter(dataList)
-        binding!!.layoutContent.recyclerview.adapter = adapter
+        binding.layoutContent.recyclerview.adapter = adapter
     }
 
     private fun removeTodo(position: Int) {
-        realm = Realm.getDefaultInstance()
-        realmResults = realm.where(TodoRealmObject::class.java).equalTo("content", realmResults.get(position).getContent()).findAll()
-        realm.executeTransaction(object : Transaction() {
-            fun execute(realm: Realm?) {
-                realmResults.deleteFromRealm(0)
-            }
-        })
+        val realmResults = realm.where(TodoRealmObject::class.java)
+        val qwer = realmResults.equalTo("content", realmResults(position).getContent()).findAll()
+        realm.executeTransaction { realmResults.deleteFromRealm(0) }
         setTodo()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 1000 -> {

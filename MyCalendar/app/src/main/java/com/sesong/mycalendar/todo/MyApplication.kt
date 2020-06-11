@@ -1,4 +1,4 @@
-package com.sesong.mycalendar.Todo
+package com.sesong.mycalendar.todo
 
 import android.app.Application
 import io.realm.Realm

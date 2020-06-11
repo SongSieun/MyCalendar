@@ -1,9 +1,11 @@
-package com.sesong.mycalendar.Todo
+package com.sesong.mycalendar.todo
+
+import io.realm.RealmObject
 
 class TodoRealmObject : RealmObject() {
-    var title: String? = null
-    var content: String? = null
-    var date: String? = null
+    var title: String = ""
+    var content: String = ""
+    var date: String = ""
 
     override fun toString(): String {
         return "TodoRealmObject{" +

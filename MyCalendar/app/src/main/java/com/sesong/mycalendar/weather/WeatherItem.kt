@@ -1,4 +1,4 @@
-package com.sesong.mycalendar.Weather
+package com.sesong.mycalendar.weather
 
 class WeatherItem(var category: String, var fcstValue: Int) {
 
